@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Coinbase BTC price</title>
+    <title>BTCChina BTC price</title>
     <script type="text/javascript" src="jquery.1.9.1.min.js"></script>
     <script type="text/javascript" src="store.min.js"></script>
     <script type="text/javascript" src="utils.js"></script>
@@ -17,8 +17,16 @@
     </style>
   </head>
   <body>
-    <h1>Coinbase BTC price</h1>
+    <h1>BTCChina BTC price</h1>
     <table border=0>
+      <tr>
+        <td class="opt">Currency:
+        <td>
+          <select id="currency">
+            <option value="cny">CNY</option>
+            <option value="usd">USD</option>
+          </select>
+      </tr>
       <tr>
         <td class="opt">Multiplier:
         <td><input id="multiplier" type="number">

@@ -11,10 +11,11 @@
    "web_accessible_resources": [
       "icon.png"
    ],
-   "description": "Shows Coinbase BTC price",
+   "description": "Shows BTCChina BTC price",
    "manifest_version": 2,
    "options_page": "options.html",
-   "name": "Coinbase BTC price",
-   "permissions": [ "notifications", "storage", "https://api.coinbase.com/" ],
+   "name": "BTCChina BTC price",
+   "short_name": "BTCChina price",
+   "permissions": [ "notifications", "storage", "https://data.btcchina.com/", "http://*.kund.nu/" ],
    "version": "0.2.0"
 }

@@ -1,6 +1,6 @@
-coinbase-btc-price
+btcchina-btc-price
 ==================
 
-Google Chrome extension that shows [coinbase.com](https://coinbase.com) btc price/rate.
+Google Chrome extension that shows [btcchina.com](https://btcchina.com) btc price/rate.
 
-Get it from [Chrome Web Store](https://chrome.google.com/webstore/detail/coinbase-btc-price/fmibcmmnjijbkmohmicihncfmpbojcgo)
+Get it from [Chrome Web Store]()

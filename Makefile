@@ -1,3 +1,3 @@
 all:
-	rm -f ./coinbase-btc-price.zip
-	zip --exclude=*README.md* --exclude=*Makefile* -r ./coinbase-btc-price.zip ./*
+	rm -f ./btcchina-btc-price.zip
+	zip --exclude=*README.md* --exclude=*Makefile* -r ./btcchina-btc-price.zip ./*
