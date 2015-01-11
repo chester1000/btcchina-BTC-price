@@ -68,78 +68,65 @@ reload_badge = function (manual) {
         clearInterval(set_interval_id);
         set_interval_id = setInterval(reload_badge, refresh_interval);
     }
-    $.ajax({
-        dataType: "json",
-        type: 'POST',
-        url: 'https://api.kraken.com/0/public/Ticker',
-        data: {
-        pair: 'XBTUSD'
-        },
-        success: function (data) {
-            if (!data) return;
-            if (data.error && data.error.length > 0) return;
-            if (data.result && !data.result['XXBTZUSD']) return;
+    $.getJSON('https://api.coinbase.com/v1/prices/spot_rate', function (data) {
+        if (!data || !data.amount) return;
 
-            var usdResult = data.result['XXBTZUSD'];
-            if (!usdResult.c) return;
-
-            var value = parseFloat(usdResult.c[0]),
-                last_value = get_last_value() || value,
-                last_max = store.get('last-max') || value,
-                last_min = store.get('last-min') || value,
-                badge_value = value * get_multiplier();
-            if (value === last_value) {
-                chrome.browserAction.setBadgeBackgroundColor({
-                    color: [0, 0, 0, 150]
-                });
-            } else if (value > last_value) {
-                chrome.browserAction.setBadgeBackgroundColor({
-                    color: [0, 150, 0, 150]
-                });
-            } else {
-                chrome.browserAction.setBadgeBackgroundColor({
-                    color: [255, 0, 0, 255]
-                });
-            }
-            chrome.browserAction.setTitle({
-                'title': '1 BTC = ' + value.toFixed(2) + ' USD'
+        var value = parseFloat(data.amount),
+            last_value = get_last_value() || value,
+            last_max = store.get('last-max') || value,
+            last_min = store.get('last-min') || value,
+            badge_value = value * get_multiplier();
+        if (value === last_value) {
+            chrome.browserAction.setBadgeBackgroundColor({
+                color: [0, 0, 0, 150]
             });
-            chrome.browserAction.setBadgeText({
-                'text': badge_value.toFixed(get_precision())
+        } else if (value > last_value) {
+            chrome.browserAction.setBadgeBackgroundColor({
+                color: [0, 150, 0, 150]
             });
-            store_float('last-value', value);
-            if (store.get('notification-max') && value > last_max) {
-                store.set('last-max', value);
-                notify('New maximum BTC price', 'The highest price is now ' + value);
-                $('#last_max').val(value);
+        } else {
+            chrome.browserAction.setBadgeBackgroundColor({
+                color: [255, 0, 0, 255]
+            });
+        }
+        chrome.browserAction.setTitle({
+            'title': '1 BTC = ' + value.toFixed(2) + ' USD'
+        });
+        chrome.browserAction.setBadgeText({
+            'text': badge_value.toFixed(get_precision())
+        });
+        store_float('last-value', value);
+        if (store.get('notification-max') && value > last_max) {
+            store.set('last-max', value);
+            notify('New maximum BTC price', 'The highest price is now ' + value);
+            $('#last_max').val(value);
+        }
+        if (store.get('notification-min') && value < last_min) {
+            store.set('last-min', value);
+            notify('New minimum BTC price', 'The lowest price is now ' + value);
+            $('#last_min').val(value);
+        }
+        if (store.get('notification-diff') && store.get('last-diff')) {
+            var within = get_within();
+            last_values.push(value);
+            if (last_values.length > within) {
+                last_values.shift();
             }
-            if (store.get('notification-min') && value < last_min) {
-                store.set('last-min', value);
-                notify('New minimum BTC price', 'The lowest price is now ' + value);
-                $('#last_min').val(value);
-            }
-            if (store.get('notification-diff') && store.get('last-diff')) {
-                var within = get_within();
-                last_values.push(value);
-                if (last_values.length > within) {
-                    last_values.shift();
+            var max = Math.max.apply(Math, last_values),
+                min = Math.min.apply(Math, last_values),
+                abs = Math.round(Math.abs(max - min) * 100) / 100,
+                last_diff = store.get('last-diff'),
+                title;
+            if (abs > last_diff) {
+                if (max === value) {
+                    title = 'Price rose from ' + min + ' to ' + max;
+                    abs = '+' + abs;
+                } else {
+                    title = 'Price fell from ' + max + ' to ' + min;
+                    abs = '-' + abs;
                 }
-                var max = Math.max.apply(Math, last_values),
-                    min = Math.min.apply(Math, last_values),
-                    abs = Math.round(Math.abs(max - min) * 100) / 100,
-                    last_diff = store.get('last-diff'),
-                    title;
-                if (abs > last_diff) {
-                    if (max === value) {
-                        title = 'Price rose from ' + min + ' to ' + max;
-                        abs = '+' + abs;
-                    } else {
-                        title = 'Price fell from ' + max + ' to ' + min;
-                        abs = '-' + abs;
-                    }
-                    last_values = [value];
-                    notify(title, 'Within ' + within + ' fetches/minutes price changed ' + abs + ' USD.');
-                }
+                last_values = [value];
+                notify(title, 'Within ' + within + ' fetches/minutes price changed ' + abs + ' USD.');
             }
         }
     });

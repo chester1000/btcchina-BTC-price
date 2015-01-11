@@ -11,10 +11,10 @@
    "web_accessible_resources": [
       "icon.png"
    ],
-   "description": "Shows Kraken BTC price",
+   "description": "Shows Coinbase BTC price",
    "manifest_version": 2,
    "options_page": "options.html",
-   "name": "Kraken BTC price",
-   "permissions": [ "notifications", "storage", "https://api.kraken.com/" ],
+   "name": "Coinbase BTC price",
+   "permissions": [ "notifications", "storage", "https://api.coinbase.com/" ],
    "version": "0.2.0"
 }
